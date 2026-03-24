@@ -118,6 +118,24 @@ This repository currently serves as:
 
 ---
 
+## Implemented Features
+
+### Feature 1: Basic Writing Editor
+- A simple, distraction-free text editor implemented as a React component.
+- Users can type their content in a full-screen textarea.
+- No formatting options; focus on clean text input.
+- Built with React and TypeScript for reliability.
+
+To run the frontend:
+1. Navigate to the `frontend` directory.
+2. Run `npm install` to install dependencies.
+3. Run `npm start` to start the development server.
+4. Open http://localhost:3000 in your browser.
+
+The editor is ready for text input and will be extended with additional features in future implementations.
+
+---
+
 ## Contributing
 
 Contributions are welcome, especially for **feature requests and their implementation**.  

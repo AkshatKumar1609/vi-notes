@@ -120,19 +120,184 @@ This repository currently serves as:
 
 ## Implemented Features
 
-### Feature 1: Basic Writing Editor
+### Feature 1: Basic Writing Editor ✅
 - A simple, distraction-free text editor implemented as a React component.
 - Users can type their content in a full-screen textarea.
 - No formatting options; focus on clean text input.
 - Built with React and TypeScript for reliability.
 
-To run the frontend:
-1. Navigate to the `frontend` directory.
-2. Run `npm install` to install dependencies.
-3. Run `npm start` to start the development server.
-4. Open http://localhost:3000 in your browser.
+### Feature 2: User Login and Registration ✅
 
-The editor is ready for text input and will be extended with additional features in future implementations.
+#### Overview
+Implemented a complete authentication system allowing students to create accounts and log in securely. Each writing session is associated with a specific user through JWT-based authentication.
+
+#### Backend Implementation
+**Technology Stack:**
+- Node.js with Express.js server
+- MongoDB for encrypted user data storage
+- JWT (JSON Web Tokens) for stateless authentication
+- bcryptjs for secure password hashing
+
+**API Endpoints:**
+- `POST /api/auth/register` - Create new account (email + password)
+- `POST /api/auth/login` - Authenticate and receive JWT token
+- `GET /api/auth/me` - Get current user (protected route)
+
+**Features:**
+- Email validation (RFC 5322 compliant)
+- Password requirements (minimum 6 characters)
+- Password hashing before storage (no plain text!)
+- Automatic JWT token generation (7-day expiration)
+- Protected routes requiring authentication
+- CORS enabled for frontend communication
+
+#### Frontend Implementation
+**Technology Stack:**
+- React 18 with TypeScript
+- React Router v6 for protected routes
+- Axios for API communication
+- Context API for global authentication state
+- CSS3 with gradient styling
+
+**Features:**
+- **Login Page**: Email and password input with validation
+- **Registration Page**: Sign-up with password confirmation validation
+- **Protected Editor**: Only accessible when logged in
+- **Session Persistence**: Automatic login on page refresh if token valid
+- **User Dashboard**: Shows logged-in user email
+- **Logout Functionality**: Clears session and redirects to login
+- **Error Handling**: User-friendly error messages for all scenarios
+- **Loading States**: Visual feedback during authentication
+
+#### User Flow
+1. Unauthenticated users redirected to `/login`
+2. New users can click "Sign up" to create account at `/register`
+3. Registration validates:
+   - Valid email format
+   - Password at least 6 characters
+   - Password confirmation matches
+   - Email doesn't already exist
+4. After registration or login, JWT token stored in localStorage
+5. Token automatically included in all API requests
+6. Editor accessible at `/editor` (protected route)
+7. User can logout, clearing token and session
+
+#### Security Measures
+- Passwords hashed with bcryptjs (salt rounds: 10)
+- Passwords not returned in API responses
+- JWT tokens have expiration (7 days default)
+- CORS restricted to frontend origin
+- Input validation on both client and server
+- Protected API endpoints require valid token
+- Sensitive environment variables in .env files
+
+#### Getting Started
+
+**Prerequisites:**
+- Node.js v14+
+- MongoDB (local or Atlas)
+
+**Backend Setup:**
+```bash
+cd backend
+npm install
+# Configure .env with MongoDB URI and JWT_SECRET
+npm run dev  # Starts on http://localhost:5000
+```
+
+**Frontend Setup:**
+```bash
+cd frontend
+npm install
+# .env already configured to http://localhost:5000/api
+npm start  # Starts on http://localhost:3000
+```
+
+**Testing the Feature:**
+1. Open http://localhost:3000
+2. You'll be redirected to /login
+3. Click "Sign up here" link
+4. Enter email (e.g., student@example.com)
+5. Enter password (min 6 characters)
+6. Confirm password
+7. Click "Sign Up"
+8. You'll be logged in and see the editor with your email
+9. You can now write content
+10. Click "Logout" to return to login page
+11. Login again using same credentials
+
+#### Database Schema
+**User Collection:**
+```javascript
+{
+  _id: ObjectId,
+  email: string,              // Unique, validated
+  password: string,           // Hashed (never stored plain)
+  createdAt: Date,           // Account creation time
+  updatedAt: Date            // Last update time
+}
+```
+
+#### Environment Configuration
+
+**Backend (.env):**
+```
+MONGODB_URI=mongodb://localhost:27017/vi-notes
+JWT_SECRET=your_secret_key_here_change_in_production
+JWT_EXPIRE=7d
+PORT=5000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:3000
+```
+
+**Frontend (.env):**
+```
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+#### Documentation
+- **Backend Details**: See `backend/README.md` for API documentation
+- **Frontend Details**: See `frontend/README.md` for component documentation
+- **Code Comments**: All source files include inline documentation
+
+#### Files Created/Modified
+
+**Backend:**
+- `backend/src/server.ts` - Express server with MongoDB connection
+- `backend/src/controllers/authController.ts` - Register/login logic
+- `backend/src/models/User.ts` - MongoDB user schema
+- `backend/src/routes/auth.ts` - Auth API routes
+- `backend/src/middleware/auth.ts` - JWT verification middleware
+- `backend/package.json` - Dependencies and scripts
+- `backend/tsconfig.json` - TypeScript configuration
+- `backend/.env` & `.env.example` - Configuration templates
+
+**Frontend:**
+- `frontend/src/context/AuthContext.tsx` - Authentication state management
+- `frontend/src/pages/Login.tsx` - Login page component
+- `frontend/src/pages/Register.tsx` - Registration page component
+- `frontend/src/pages/Editor.tsx` - Protected editor page
+- `frontend/src/components/ProtectedRoute.tsx` - Route guard component
+- `frontend/src/services/api.ts` - Axios API client
+- `frontend/src/styles/Auth.css` - Authentication pages styling
+- `frontend/src/styles/Editor.css` - Editor page styling
+- `frontend/src/App.tsx` - Updated with routing
+
+#### Testing Checklist
+- [x] Register new user with valid credentials
+- [x] Prevent registration with invalid email
+- [x] Prevent registration with short passwords
+- [x] Prevent registration with mismatched passwords
+- [x] Prevent registration with duplicate email
+- [x] Login with correct credentials
+- [x] Prevent login with wrong credentials
+- [x] JWT token persists across page refreshes
+- [x] Token verified on app load (auto-login)
+- [x] Logout clears token and redirects
+- [x] Editor only accessible when authenticated
+- [x] Unauthenticated users redirected to login
+- [x] Error messages displayed to user
+- [x] Loading states during API calls
 
 ---
 

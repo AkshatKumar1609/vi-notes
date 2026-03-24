@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Editor from './pages/Editor';
 import './App.css';
 
 function App() {
-  const [text, setText] = useState('');
-
   return (
-    <div className="editor-container">
-      <textarea
-        className="writing-editor"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Start writing your content here..."
-      />
-    </div>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/editor"
+            element={
+              <ProtectedRoute>
+                <Editor />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/editor" replace />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 

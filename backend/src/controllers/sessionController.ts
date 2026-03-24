@@ -191,13 +191,18 @@ export const recordPaste = async (req: AuthRequest, res: Response) => {
 
 /**
  * POST /api/sessions/:sessionId/complete
- * Mark session as complete
+ * Mark session as complete with final content and metadata
  */
 export const completeSession = async (req: AuthRequest, res: Response) => {
   try {
     const { sessionId } = req.params;
     const userId = typeof req.user === 'string' ? req.user : req.user?.id;
-    const { content, contentLength } = req.body;
+    const {
+      content,
+      contentLength,
+      keystrokeEvents,
+      pasteEvents,
+    } = req.body;
 
     const session = await WritingSession.findById(sessionId);
 
@@ -215,23 +220,38 @@ export const completeSession = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    // Mark session as complete with end time
     const endTime = new Date();
     session.sessionEndTime = endTime;
     session.totalDuration = endTime.getTime() - session.sessionStartTime.getTime();
 
+    // Update content if provided
     if (content !== undefined) {
       session.content = content;
     }
 
+    // Update content length if provided
     if (contentLength !== undefined) {
       session.contentLength = contentLength;
+    }
+
+    // Update keystroke events if provided
+    if (keystrokeEvents && Array.isArray(keystrokeEvents)) {
+      session.keystrokeEvents = keystrokeEvents;
+      session.totalKeystrokes = keystrokeEvents.length;
+    }
+
+    // Update paste events if provided
+    if (pasteEvents && Array.isArray(pasteEvents)) {
+      session.pasteEvents = pasteEvents;
+      session.totalPastes = pasteEvents.length;
     }
 
     await session.save();
 
     return res.status(200).json({
       success: true,
-      message: 'Session completed',
+      message: 'Session completed and saved',
       data: session,
     });
   } catch (error: any) {

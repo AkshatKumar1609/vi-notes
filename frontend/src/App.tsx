@@ -5,6 +5,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Editor from './pages/Editor';
+import SessionHistory from './pages/SessionHistory';
+import SessionDetail from './pages/SessionDetail';
 import './App.css';
 
 function App() {
@@ -19,6 +21,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Editor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/sessions"
+            element={
+              <ProtectedRoute>
+                <SessionHistory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/session/:sessionId"
+            element={
+              <ProtectedRoute>
+                <SessionDetail />
               </ProtectedRoute>
             }
           />

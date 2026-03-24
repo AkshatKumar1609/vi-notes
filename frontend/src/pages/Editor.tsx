@@ -113,9 +113,12 @@ const Editor: React.FC = () => {
     if (sessionId && isSessionActive) {
       setIsSaving(true);
       try {
+        const sessionData = keystrokeTracker.getSessionData(sessionId, text);
         await sessionAPI.completeSession(sessionId, {
           content: text,
           contentLength: text.length,
+          keystrokeEvents: sessionData.keystrokeEvents,
+          pasteEvents: sessionData.pasteEvents,
         });
       } catch (error) {
         console.error('Failed to complete session:', error);
@@ -180,6 +183,13 @@ const Editor: React.FC = () => {
           </div>
           <div className="user-info">
             <span>{user?.email}</span>
+            <button
+              onClick={() => navigate('/sessions')}
+              className="history-btn"
+              title="View session history"
+            >
+              📋 Sessions
+            </button>
             <button
               onClick={handleLogout}
               className="logout-btn"

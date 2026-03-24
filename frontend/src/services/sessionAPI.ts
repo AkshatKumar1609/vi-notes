@@ -72,6 +72,8 @@ export const sessionAPI = {
     data: {
       content: string;
       contentLength: number;
+      keystrokeEvents?: KeystrokeEvent[];
+      pasteEvents?: PasteEvent[];
     }
   ) =>
     axiosInstance.post(`/sessions/${sessionId}/complete`, data),
